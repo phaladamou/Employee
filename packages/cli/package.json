@@ -1,0 +1,27 @@
+{
+  "name": "@local/employee-cli",
+  "version": "0.2.0",
+  "description": "local employee - Creator CLI",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "employee-cli": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@local/employee": "workspace:*",
+    "chalk": "^5.3.0",
+    "viem": "^2.44.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}
+
