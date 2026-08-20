@@ -1,0 +1,10 @@
+const { createDatabase } = require('./dist/state/database.js');
+const os = require('os');
+const path = require('path');
+const dbPath = path.join(os.homedir(), '.employee', 'employee.db');
+const db = createDatabase(dbPath);
+db.raw.prepare("UPDATE inbox_messages SET status = 'received', retry_count = 0").run();
+console.log('Message remis en received');
+const msgs = db.raw.prepare('SELECT id, status, retry_count FROM inbox_messages').all();
+console.log(JSON.stringify(msgs));
+db.close();
