@@ -37,14 +37,14 @@ The goal is to provide a runtime where AI can operate as an actual digital emplo
 
 ```bash
 # Clone
-git clone https://github.com/your-user/employee.git
-cd employee
+git clone https://github.com/phaladamou/Employee.git
+cd Employee
 
 # Install dependencies
-npm install
+pnpm install
 
 # Build
-npx tsc
+pnpm exec tsc
 
 # Configure your model
 $env:DEEPSEEK_API_KEY = "your-key"
@@ -67,10 +67,10 @@ node test-agent.mjs
 ### From Source
 
 ```bash
-git clone https://github.com/your-user/employee.git
-cd employee
-npm install
-npx tsc
+git clone https://github.com/phaladamou/Employee.git
+cd Employee
+pnpm install
+pnpm exec tsc
 ```
 
 ### File Locations
