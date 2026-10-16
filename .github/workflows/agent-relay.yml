@@ -1,0 +1,51 @@
+name: Agent Relay
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    if: >-
+      (
+        github.event_name == 'issues' &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+      ) ||
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.comment.user.login != 'github-actions[bot]' &&
+        github.event.comment.user.login != 'phaladamou' &&
+        !startsWith(github.event.comment.body, '✅') &&
+        !startsWith(github.event.comment.body, '❌') &&
+        !startsWith(github.event.comment.body, '🤖') &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+      )
+    steps:
+      - name: Relay to orchestrator
+        env:
+          ORCHESTRATOR_PAT: ${{ secrets.ORCHESTRATOR_PAT }}
+          TARGET_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "issues" ]; then
+            ISSUE_NUM="${{ github.event.issue.number }}"
+          else
+            ISSUE_NUM="${{ github.event.comment.issue_url }}"
+            ISSUE_NUM="${ISSUE_NUM##*/}"
+          fi
+
+          curl -X POST \
+            -H "Authorization: token $ORCHESTRATOR_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/phaladamou/agent-orchestrator/dispatches \
+            -d "{
+              \"event_type\": \"agent-task\",
+              \"client_payload\": {
+                \"target_repo\": \"$TARGET_REPO\",
+                \"issue_number\": \"$ISSUE_NUM\",
+                \"event_name\": \"$EVENT_NAME\"
+              }
+            }"
